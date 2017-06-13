@@ -78,8 +78,8 @@ No. 21 = 10101 cannot be generated.
 
 
 2.2.6) Construct a context-free grammer for roman numericals.
-thousands = p(M, V-bar, X-bar) hundreds
-hundreds = p(C, D, M) tens
-tens = p(X, L, C) digits
-digits = p(I, V, X) | eps
+thousands -> p(M, V-bar, X-bar) hundreds
+hundreds -> p(C, D, M) tens
+tens -> p(X, L, C) digits
+digits -> p(I, V, X) | eps
 p(A, B, C) -> A | AA | AAA | AB | B | BA | BAA | BAAA | AC

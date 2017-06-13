@@ -15,3 +15,41 @@ Use pre-ordered traversal.
 expr -> {print('(')} expr1 {print(op)} expr2 {print(')')} op | term
 term -> digit {print(digit)} 
 op -> + | - | * | /
+
+
+2.3.3) Construct a syntax-directed translation scheme that translates integers into roman numericals.
+Solution:
+thousands -> d {p(M, V-bar, X-bar, d) hundreds
+hundreds -> d {p(C, D, M, d)} tens
+tens -> d {p(X, L, C, d)} digits
+digits -> d {p(I, V, X, d)}
+d -> 0 | 1 | 2 | 3 | 4 | 5 |6 | 7 | 8 | 9
+p(A, B, C, d): 
+    d = 0:
+    d = 1: print(A)
+    d = 2: print(AA)
+    d = 3: print(AAA)
+    d = 4: print(AB)
+    d = 5: print(B)
+    d = 6: print(BA)
+    d = 7: print(BAA)
+    d = 8: print(BAAA)
+    d = 9: print(AC)
+
+
+2.3.4) Construct a syntax-directed translation scheme that translates roman numericals to integers.
+Solution:
+thousands -> p(M, V-bar, X-bar) hundreds
+hundreds -> p(C, D, M) tens
+tens -> p(X, L, C) digits
+digits -> p(I, V, X)
+p(A, B, C) -> A {print(1)}| AA {print(2)}| AAA {print(3)}| AB {print(4)}| B {print(5)}
+            | BA {print(6)}| BAA {print(7)}| BAAA {print(8)}| AC {print(9)}| eps {print(0)}
+
+
+2.3.5) Construct a syntax-directed translation scheme that translates postfix arithmetic expressions into
+equivalent prefix arithmetic expression.
+Solutions:
+Use pre-ordered traversal.
+expr -> expr expr op {print(op)} | term
+term -> num {print(num)}
