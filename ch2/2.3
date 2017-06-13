@@ -1,0 +1,17 @@
+2.3.1) Construct a syntax-directed translation scheme that translates arithmetic expressions from infix notation
+into prefix notation in which an operator appears before its operands; e.g. -xy is the prefix notation for x-y.
+Give annotated parse trees for the inputs 9-5+2 and 9-5*2.
+Solution:
+Use post-ordered traversal.
+expr -> expr + expr {print('+')} | expr - expr {print('-')}| term
+term -> term * term {print('*')} | term / term {print('/')}| factor
+factor -> digit	{print(digit)} | (expr)
+
+
+2.3.2) Construct a syntax-directed translation scheme that translates arithmetic expressions from postfix notation
+into infix notation. Give annotated parse trees for the inputs 95-2* and 952*-.
+Solution:
+Use pre-ordered traversal.
+expr -> {print('(')} expr1 {print(op)} expr2 {print(')')} op | term
+term -> digit {print(digit)} 
+op -> + | - | * | /
