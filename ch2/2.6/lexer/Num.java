@@ -1,9 +1,9 @@
 package lexer;
 
 public class Num extends Token {
-	public final int value;
+	public final float value;
 
-	public Num(int v) {
+	public Num(float v) {
 		super(Tag.NUM);
 		value = v;
 	}

@@ -3,6 +3,7 @@ package lexer;
 import java.io.*;
 import java.util.*;
 
+
 public class Lexer {
 	public int line =1;
 	private char peek = ' ';
@@ -53,14 +54,32 @@ public class Lexer {
 
 		// Get number
 		if (Character.isDigit(peek)) {
-			int v = 0;
+			float v = 0;
 			do {
 				v = 10 * v + Character.digit(peek, 10);
 				peek = (char)System.in.read();
 			} while ( Character.isDigit(peek) );
 
-			return new Num(v);
+			if ( peek == '.' ) {
+				float decimal = 0;
+				int digits = 0;
+				while ( Character.isDigit(peek = (char)System.in.read()) ) {
+					decimal += (float)Character.digit(peek, 10) / Math.pow(10, digits++);
+				}
+			}
+
+			return new Num(v + decimal);
 		}
+		if ( peek == '.' ) {
+			float decimal = 0;
+			int digits = 0;
+			while ( Character.isDigit(peek = (char)System.in.read()) ) {
+				decimal += (float)Character.digit(peek, 10) / Math.pow(10, digits++);
+			}
+
+			return new Num(decimal);
+		}
+
 
 		// Get word.
 		if ( Character.isLetter(peek) ) {
@@ -77,6 +96,43 @@ public class Lexer {
 			w = new Word(Tag.ID, s);
 			words.put(s, w);
 			return w;
+		}
+
+		// Get relational operation >, >=, ==, !=, <, <=
+		if ( peek == '>' ) {
+			peek = (char)System.in.read();
+			if ( peek == '=' ) {
+				peek = ' ';
+				return new Relation(GREATER_THAN_OR_EQUAL_TO);
+			} else {
+				return new Relation(GREATER_THAN);
+			}
+		}
+		if ( peek == '<' ) {
+			peek = (char)System.in.read();
+			if ( peek == '=' ) {
+				peek == ' ';
+				return new Relation(LESS_THAN_OR_EQUAL_TO);
+			} else {
+				return new Relation(LESS_THAN);
+			}
+		}
+		if ( peek == '=' ) {
+			peek = (char)System.in.read();
+			if ( peek == '=' ) {
+				peek = ' ';
+				return new Relation(EQUAL_TO);
+			} else {
+				// Throw syntax error exception! Until '=' is defined by the grammar.
+			}
+		}
+		if ( peek == '!' ) {
+			peek = (char)System.in.read();
+			if ( peek == '=' ) {
+				peek = ' ';
+				return new Relation(NOT_EQUAL_TO);
+			} else {
+				// Throw syntax error exception! Until '=' is defined by the grammar.
 		}
 
 		// Other characters, such '}' or '+'.
