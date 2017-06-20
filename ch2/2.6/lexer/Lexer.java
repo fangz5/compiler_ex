@@ -33,19 +33,12 @@ public class Lexer {
 					peek = (char)System.in.read();
 				} while ( peek != '\n' );
 
-				scan();
-
 			} else if ( peek == '*' ) { // 		"/* ... */" type comments.
 				char prev = ' ';
-				boolean isFirstIter = true;
-				do {
-					if ( isFirstIter ) 	isFirstIter = false;
-					else prev = peek;
-
+				while ( prev != '*' || peek != '/') {
+					prev = peek;
 					peek = (char)System.in.read();
-				} while ( prev != '*' || peek != '/');
-
-				scan();
+				}
 
 			} else {
 				// Throw "Syntax error"!
@@ -55,31 +48,30 @@ public class Lexer {
 		// Get number
 		if (Character.isDigit(peek)) {
 			float v = 0;
+			StringBuffer b = new StringBuffer();
 			do {
-				v = 10 * v + Character.digit(peek, 10);
+				b.append(peek);
 				peek = (char)System.in.read();
 			} while ( Character.isDigit(peek) );
 
 			if ( peek == '.' ) {
-				float decimal = 0;
-				int digits = 0;
+				b.append('.');
 				while ( Character.isDigit(peek = (char)System.in.read()) ) {
-					decimal += (float)Character.digit(peek, 10) / Math.pow(10, digits++);
+					b.append(peek);
 				}
 			}
 
-			return new Num(v + decimal);
+			return new Num(new Float(b.toString));
 		}
-		if ( peek == '.' ) {
-			float decimal = 0;
-			int digits = 0;
+		if ( peek == '.' ) {	// .1234 type floats.
+			float v = 0;
+			StringBuffer b = new StringBuffer();
 			while ( Character.isDigit(peek = (char)System.in.read()) ) {
-				decimal += (float)Character.digit(peek, 10) / Math.pow(10, digits++);
+				b.append(peek);
 			}
 
-			return new Num(decimal);
+			return new Num(new Float(b.toString));
 		}
-
 
 		// Get word.
 		if ( Character.isLetter(peek) ) {
@@ -99,40 +91,19 @@ public class Lexer {
 		}
 
 		// Get relational operation >, >=, ==, !=, <, <=
-		if ( peek == '>' ) {
+		if ( "><!=".indexOf(peek) != -1 ) {
+			StringBuffer b = new StringBuffer();
+			b.append(peek);
+
 			peek = (char)System.in.read();
 			if ( peek == '=' ) {
+				b.append(peek);
 				peek = ' ';
-				return new Relation(GREATER_THAN_OR_EQUAL_TO);
-			} else {
-				return new Relation(GREATER_THAN);
 			}
-		}
-		if ( peek == '<' ) {
-			peek = (char)System.in.read();
-			if ( peek == '=' ) {
-				peek == ' ';
-				return new Relation(LESS_THAN_OR_EQUAL_TO);
-			} else {
-				return new Relation(LESS_THAN);
-			}
-		}
-		if ( peek == '=' ) {
-			peek = (char)System.in.read();
-			if ( peek == '=' ) {
-				peek = ' ';
-				return new Relation(EQUAL_TO);
-			} else {
-				// Throw syntax error exception! Until '=' is defined by the grammar.
-			}
-		}
-		if ( peek == '!' ) {
-			peek = (char)System.in.read();
-			if ( peek == '=' ) {
-				peek = ' ';
-				return new Relation(NOT_EQUAL_TO);
-			} else {
-				// Throw syntax error exception! Until '=' is defined by the grammar.
+
+			// '=' is not supported by the grammar yet and should be excluded.
+
+			return new Relation(b.toString);
 		}
 
 		// Other characters, such '}' or '+'.
